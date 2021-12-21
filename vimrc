@@ -19,6 +19,7 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'pechorin/any-jump.vim'
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 call plug#end()
 " let g:AutoPairsShortcutToggle = '<C-p>'
 let g:deoplete#enable_at_startup = 1
