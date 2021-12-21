@@ -18,13 +18,13 @@ Plug 'mileszs/ack.vim'
 Plug 'connorholyday/vim-snazzy'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'pechorin/any-jump.vim'
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'pechorin/any-jump.vim'
 call plug#end()
 " let g:AutoPairsShortcutToggle = '<C-p>'
 let g:deoplete#enable_at_startup = 1
 let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
-let g:AutoPairs['<']='>'
+"let g:AutoPairs['<']='>'
 
 let mapleader="\<space>"
 map ; :
@@ -33,10 +33,23 @@ map <leader>sr :%s/
 
 color snazzy
 
+map J 5j
+map K 5k
+
 map S :w<CR>
 map Q :q<CR>
 
 map <F2> :NERDTreeToggle<CR>
+
+
+" Leade 插件配置
+noremap <leader>f :LeaderfSelf<cr> 
+noremap <leader>fm :LeaderfMru<cr>
+noremap <leader>ff :LeaderfFunction<cr>
+noremap <leader>fb :LeaderfBufTagAll<cr>
+noremap <leader>ft :LeaderfBufTag<cr>
+noremap <leader>fl :LeaderfLine<cr>
+noremap <leader>fw :LeaderfWindow<cr>
 
 " ===
 " === Tab management
@@ -68,27 +81,16 @@ nmap <F8> :TagbarToggle<CR>
 
 map <leader>ct :call RunCFTest()<CR>
 func! RunCFTest()
+	exec "w"
 	exec "!cf test"
 endfunc
 
 map <leader>cs :call RunCFSubmit()<CR>
 func! RunCFSubmit()
+	exec "w"
 	exec "!cf submit"
 endfunc
 
-map r :call CompileRunGcc()<CR>
-func! CompileRunGcc()
-	exec "w"
-	"if &filetype == 'c'
-	"	exec "!g++ % -o %<"
-	"	exec "!time ./%<"
-	"elseif &filetype == 'cpp'
-	"	exec "!g++ % -o %<"
-	"	exec "!time ./%<"
-	"elseif &filetype == 'markdown'
-	"	exec "MarkdownPreview"
-	"endif
-endfunc
 
 syntax on " 自动语法高亮
 set cursorline " 突出显示当前行
