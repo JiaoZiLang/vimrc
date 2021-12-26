@@ -44,9 +44,6 @@ inoremap <C-u> <esc>gUiwea
 map J 5j
 map K 5k
 
-map S :w<CR>
-map Q :q<CR>
-
 " =============================================
 " 设置树的显示图标
 let g:NERDTreeDirArrowExpandable = '+'
@@ -69,7 +66,7 @@ map <F2> :NERDTreeToggle<CR>
 
 " =============================================
 " Leade 插件配置
-noremap <leader>fs :LeaderfSelf<cr> 
+noremap <leader>f :LeaderfSelf<cr> 
 noremap <leader>fm :LeaderfMru<cr>
 noremap <leader>ff :LeaderfFunction<cr>
 noremap <leader>fb :LeaderfBufTagAll<cr>
@@ -213,7 +210,9 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" 按键冲突，屏蔽这个
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -232,8 +231,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" 按键冲突，屏蔽这个
+" xmap <leader>f  <Plug>(coc-format-selected)
+"nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
