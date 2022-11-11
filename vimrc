@@ -1,3 +1,4 @@
+
 ":CocInstall coc-json coc-tsserver ===
 " === Auto load for first time uses
 " ===
@@ -8,12 +9,17 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin()
+Plug 'f-person/git-blame.nvim'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'luochen1990/rainbow'
-Plug 'glepnir/dashboard-nvim'
+Plug 'chxuan/vimplus-startify'
 Plug 'jiangmiao/auto-pairs'
+Plug 'fatih/vim-go', { 'tag': '*' }
+Plug 'dgryski/vim-godef'
+Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
 Plug 'connorholyday/vim-snazzy'
@@ -22,6 +28,14 @@ Plug 'Yggdroot/indentLine'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'pechorin/any-jump.vim'
+Plug 'tyru/open-browser.vim'
+Plug 'aklt/plantuml-syntax'
+Plug 'weirongxu/plantuml-previewer.vim'
+" markdown
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle', 'for': ['text', 'markdown', 'vim-plug'] }
+Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
+Plug 'dkarter/bullets.vim'
 call plug#end()
 
 " =============================================
@@ -33,16 +47,20 @@ let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
 " =============================================
 let mapleader="\<space>"
 map ; :
-map <leader>/ :!
-map <leader>sr :%s/
+"map <leader>/ :!
+"map <leader>sr :%s/
 
 color snazzy
 
 "change word to uppercase, I love this very much
-inoremap <C-u> <esc>gUiwea
+"inoremap <C-u> <esc>gUiwea
 
 map J 5j
 map K 5k
+
+map S :w<CR>
+map Q :q<CR>
+
 
 " =============================================
 " 设置树的显示图标
@@ -66,7 +84,7 @@ map <F2> :NERDTreeToggle<CR>
 
 " =============================================
 " Leade 插件配置
-noremap <leader>f :LeaderfSelf<cr> 
+noremap <leader>fs :LeaderfSelf<cr>
 noremap <leader>fm :LeaderfMru<cr>
 noremap <leader>ff :LeaderfFunction<cr>
 noremap <leader>fb :LeaderfBufTagAll<cr>
@@ -86,6 +104,12 @@ map tr :+tabnext<CR>
 map tml :-tabmove<CR>
 map tmr :+tabmove<CR>
 
+" Resize splits with arrow keys
+"noremap <up> :res +5<CR>
+"noremap <down> :res -5<CR>
+"noremap <left> :vertical resize-5<CR>
+"noremap <right> :vertical resize+5<CR>
+
 " Rotate screens
 noremap srh <C-w>b<C-w>K
 noremap srv <C-w>b<C-w>H
@@ -100,24 +124,24 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+
 " =============================================
 nmap <F8> :TagbarToggle<CR>
 
-" =============================================
-map <leader>ct :call RunCFTest()<CR>
-func! RunCFTest()
-	exec "w"
-	exec "!cf test"
-endfunc
-
-map <leader>cs :call RunCFSubmit()<CR>
-func! RunCFSubmit()
-	exec "w"
-	exec "!cf submit"
-endfunc
-
 
 " =============================================
+autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE " transparent bg
 syntax on " 自动语法高亮
 set cursorline " 突出显示当前行
 set encoding=utf-8
@@ -137,9 +161,10 @@ set shiftwidth=4 " 设定 << 和 >> 命令移动时的宽度为 4
 set softtabstop=4 " 使得按退格键时可以一次删掉 4 个空格
 set smartindent " 开启新行时使用智能自动缩进
 set tabstop=4 " 设定 tab 长度为 4
+set expandtab
 set ambiwidth=double " 设置为双字宽显示，否则无法完整显示如:☆
 set wildmode=list:longest
-
+set clipboard+=unnamedplus " 需要安装剪切工具"
 
 " =============================================
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
@@ -147,11 +172,11 @@ set wildmode=list:longest
 set encoding=utf-8
 
 " TextEdit might fail if hidden is not set.
-set hidden
+" set hidden
 
 " Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
+"set nobackup
+"set nowritebackup
 
 " Give more space for displaying messages.
 set cmdheight=2
@@ -175,16 +200,16 @@ endif
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+"function! s:check_back_space() abort
+"  let col = col('.') - 1
+"  return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
 
 " Use <c-space> to trigger completion.
 if has('nvim')
@@ -210,9 +235,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
-" 按键冲突，屏蔽这个
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-
+"nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -231,9 +254,8 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
-" 按键冲突，屏蔽这个
-" xmap <leader>f  <Plug>(coc-format-selected)
-"nmap <leader>f  <Plug>(coc-format-selected)
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
@@ -357,3 +379,64 @@ let g:airline_symbols.crypt = "CR"
 " +=================================== tagbar =======================================+ "
 
 let g:tagbar_width=30
+
+
+
+"+=====================plantuml===================+"
+au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = get(
+    \  matchlist(system('cat `which plantuml` | grep plantuml.jar'), '\v.*\s[''"]?(\S+plantuml\.jar).*'),
+    \  1,
+    \  0
+    \)
+
+
+"=====================vim -go ================================""
+"let g:go_fmt_autosave = 0 # 关闭保存文件时自动格式化
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+
+
+" ==================== vim-instant-markdown ====================
+let g:instant_markdown_slow = 0
+let g:instant_markdown_autostart = 0
+" let g:instant_markdown_open_to_the_world = 1
+" let g:instant_markdown_allow_unsafe_content = 1
+" let g:instant_markdown_allow_external_content = 0
+" let g:instant_markdown_mathjax = 1
+let g:instant_markdown_autoscroll = 1
+
+" ==================== vim-go ====================
+let g:go_echo_go_info = 0
+let g:go_doc_popup_window = 1
+let g:go_def_mapping_enabled = 0
+let g:go_template_autocreate = 0
+let g:go_textobj_enabled = 0
+let g:go_auto_type_info = 1
+let g:go_def_mapping_enabled = 0
+let g:go_highlight_array_whitespace_error = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_chan_whitespace_error = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_format_strings = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_function_parameters = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_space_tab_error = 1
+let g:go_highlight_string_spellcheck = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_trailing_whitespace_error = 1
+let g:go_highlight_types = 1
+let g:go_highlight_variable_assignments = 0
+let g:go_highlight_variable_declarations = 0
+let g:go_doc_keywordprg_enabled = 0
+
+" ==================== vim-markdown-toc ====================
+"let g:vmt_auto_update_on_save = 0
+"let g:vmt_dont_insert_fence = 1
+let g:vmt_cycle_list_item_markers = 1
+let g:vmt_fence_text = 'TOC'
+let g:vmt_fence_closing_text = '/TOC'
